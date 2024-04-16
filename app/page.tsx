@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setExposureTable, setPolicyTable } from "@/src/redux/features/tables";
 import { ActionsExposure, ActionsPolicy } from "@/src/components/ActionsTable/Actions";
 import ModalJSON from "@/src/components/Modals/ModalJSON";
+import Loading from "@/src/components/Shared/Loading";
 
 const columns = [
   {
@@ -50,6 +51,7 @@ const columns = [
 ]
 
 export default function Home() {
+  const [loading, setLoading] = useState(true)
   const dispatch = useAppDispatch()
   const { policyTable, exposureTable } = useAppSelector((state) => state.data)
   const [json, setJson] = useState<any>()
@@ -70,18 +72,26 @@ export default function Home() {
 
 
   useEffect(() => {
-    if (!exposureTable.length && !policyTable.length)
+    if (!exposureTable.length && !policyTable.length){
       service.getJsonData("/ejemplo.json")
         .then((data: any) => {
           const exposure = service.transformExposure(data.exposurevehicles[0])
           const policy = service.transformPolicy(data.policyInsured)
           dispatch(setPolicyTable([...policy]))
           dispatch(setExposureTable([...exposure]))
+          setLoading(false)
         })
         .catch(error => {
           console.error(error);
         });
+    }else{
+      setLoading(false)
+    }
   }, [])
+
+  if(loading){
+    return(<Loading/>)
+  }
 
   return (
     <main className="flex flex-col items-center justify-between pt-10">
@@ -89,7 +99,7 @@ export default function Home() {
         <div className="w-full py-2 flex flex-wrap justify-end gap-4">
           <Link href={{
             pathname: "/create",
-            query:{type:"exposure"}
+            query: { type: "exposure" }
           }}>
             <button className="border-secondary border-[3px] text-secondary font-bold rounded-full py-2 px-4" >
               Crear Expuesto +
@@ -97,7 +107,7 @@ export default function Home() {
           </Link>
           <Link href={{
             pathname: "/create",
-            query:{type:"policy"}
+            query: { type: "policy" }
           }}>
             <button className="border-secondary border-[3px] text-secondary font-bold rounded-full py-2 px-4" >
               Crear Polizá +
