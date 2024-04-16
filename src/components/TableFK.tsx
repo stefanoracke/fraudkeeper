@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Tooltip } from "@nextui-org/react";
 
 interface ColumnsI {
@@ -17,28 +17,14 @@ export interface ActionI {
 interface TableFKI {
   columns: ColumnsI[],
   rows: any[],
-  actions: ActionI[]
+  Actions: any
 }
 
-function RenderActions({ actions, item, rows }: { actions: ActionI[], item: any, rows: any }) {
-  return (
-    <div className="relative flex items-center gap-2">
-      {
-        actions.map((action, index) => (
-          <Tooltip content={action.tooltipText} key={action.tooltipText + index + "accion"} color={action.colorClass}>
-            <span className={`text-lg text-${action.colorClass} cursor-pointer active:opacity-50`} onClick={() => { action.action(item,rows) }}>
-              {action.icon}
-            </span>
-          </Tooltip>
-        ))
-      }
-    </div>
-  )
 
-}
 
 export default function TableFK(params: TableFKI) {
-  const { columns, rows, actions } = params
+  const { columns, rows, Actions } = params
+
   return (
     <Table aria-label="Example table with dynamic content">
       <TableHeader columns={columns}>
@@ -49,7 +35,7 @@ export default function TableFK(params: TableFKI) {
           <TableRow key={item.key}>
             {(columnKey) => <TableCell>{
               columnKey == "actions" ?
-                <RenderActions actions={actions} item={item} rows={rows}/>
+                <Actions item={item}/>
                 :
                 getKeyValue(item, columnKey)
 

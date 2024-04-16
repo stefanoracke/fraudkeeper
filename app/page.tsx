@@ -1,14 +1,12 @@
 "use client"
 import TableFK, { ActionI } from "@/src/components/TableFK";
-import DeleteIcon from "@/src/icons/DeleteIcon";
-import EditIcon from "@/src/icons/EditIcon";
-import { ClaimDataI } from "@/src/models/ClaimData.interface";
 import * as service from "@/src/utils/transformJson";
 import { useEffect, useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure, Tooltip } from "@nextui-org/react";
 import { Code } from "@nextui-org/react";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setExposureTable, setPolicyTable } from "@/src/redux/features/tables";
+import { ActionsExposure, ActionsPolicy } from "@/src/components/ActionsTable/Actions";
 
 const columns = [
   {
@@ -66,51 +64,10 @@ export default function Home() {
     setJson(JSON.stringify(objSend, null, 4))
     onOpen()
   }
-  const actionPolicy: ActionI[] = [
-    {
-      tooltipText: "Editar",
-      icon: <EditIcon />,
-      colorClass: "default",
-      action: (ev: any) => {
-        console.log(ev)
-      }
-    },
-    {
-      tooltipText: "Eliminar",
-      colorClass: "primary",
-      icon: <DeleteIcon />,
-      action: (ev: any, rows: any) => {
-        dispatch(setPolicyTable(deleteElement(ev, rows)))
-      }
-    },
-  ]
-  const actionExposure: ActionI[] = [
-    {
-      tooltipText: "Editar",
-      icon: <EditIcon />,
-      colorClass: "default",
-      action: (ev: any) => {
-        console.log(ev)
-      }
-    },
-    {
-      tooltipText: "Eliminar",
-      colorClass: "primary",
-      icon: <DeleteIcon />,
-      action: (ev: any, rows: any) => {
-        dispatch(setExposureTable(deleteElement(ev, rows)))
-      }
-    },
-  ]
-
-  const deleteElement = (el: ClaimDataI, rows: ClaimDataI[]) => {
-    const filteredArray = exposureTable.filter(obj => obj.id !== el.id);
-    return filteredArray;
-  }
-
-
+  
 
   useEffect(() => {
+    if(!exposureTable.length && !policyTable.length)
     service.getJsonData("/ejemplo.json")
       .then((data: any) => {
         const exposure = service.transformExposure(data.exposurevehicles[0])
@@ -136,11 +93,11 @@ export default function Home() {
         </div>
         <div className="py-4">
           <h4 className="pb-4 text-primary font-bold">Vehiculos Expuestos</h4>
-            <TableFK actions={actionExposure} columns={columns} rows={exposureTable}></TableFK>
+          <TableFK key="Tabla1" Actions={ActionsExposure} columns={columns} rows={exposureTable}></TableFK>
         </div>
         <div className="py-4">
           <h4 className="pb-4 text-primary font-bold">Póliza</h4>
-            <TableFK actions={actionPolicy} columns={columns} rows={policyTable}></TableFK>
+          <TableFK key="Tabla2" Actions={ActionsPolicy} columns={columns} rows={policyTable}></TableFK>
         </div>
       </div>
       <Modal isOpen={isOpen} size="5xl" onOpenChange={onOpenChange}>

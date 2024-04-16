@@ -33,7 +33,6 @@ export function transformPolicy(data: {
     "Chasis": string[];
     "DominioChasisMotorCobertura afectada": string[];
     "Concepto": string[];
-    "Asegurado": string[]; // Not used in the transformation (optional)
     "Entidad": string[];
 }): ClaimDataI[] {
     const claimData: ClaimDataI[] = [];
@@ -59,9 +58,9 @@ export function returnJson(data: ClaimDataI[]) {
         "FechaOcurrencia": string[];
         "Motor": string[];
         "Chasis": string[];
-        "DominioChasisMotorCobertura afectada": string[];
+        "DominioChasisMotorCobertura afectada"?: string[];
         "Concepto": string[];
-        "Asegurado": string[]; // Not used in the transformation (optional)
+        "Asegurado"?: string[];
         "Entidad": string[];
     } = {
         "Cobertura afectada": [],
@@ -71,7 +70,7 @@ export function returnJson(data: ClaimDataI[]) {
         "Chasis": [],
         "DominioChasisMotorCobertura afectada": [],
         "Concepto": [],
-        "Asegurado": [], // Not used in the transformation (optional)
+        "Asegurado": [],
         "Entidad": [],
     };
 
@@ -81,12 +80,20 @@ export function returnJson(data: ClaimDataI[]) {
         untransformedData["FechaOcurrencia"].push(item.date);
         untransformedData["Motor"].push(item.engine || "");
         untransformedData["Chasis"].push(item.chassis);
-        if (item.domain_chasis_engine)
+        if (item.domain_chasis_engine && untransformedData["DominioChasisMotorCobertura afectada"])
             untransformedData["DominioChasisMotorCobertura afectada"].push(item.domain_chasis_engine);
-        if (item.asegurado)
+        if (item.asegurado && untransformedData["Asegurado"])
             untransformedData["Asegurado"].push(item.asegurado);
         untransformedData["Concepto"].push(item.concept);
         untransformedData["Entidad"].push(item.entity);
+    }
+
+    if ( untransformedData["Asegurado"] && untransformedData["Asegurado"].length === 0) {
+        delete untransformedData["Asegurado"];
+    }
+
+    if (untransformedData["DominioChasisMotorCobertura afectada"] && untransformedData["DominioChasisMotorCobertura afectada"].length === 0) {
+        delete untransformedData["DominioChasisMotorCobertura afectada"];
     }
 
     return untransformedData;

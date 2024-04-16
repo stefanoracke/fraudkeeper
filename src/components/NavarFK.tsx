@@ -5,11 +5,13 @@ import Image from "next/image";
 
 export default function NavbarFK() {
   return (
-    <Navbar shouldHideOnScroll classNames={{ wrapper: "max-w-[1280px] container", content:"flex gap-4" }}>
+    <Navbar shouldHideOnScroll classNames={{ wrapper: "max-w-[1280px] container", content: "flex gap-4" }}>
       <NavbarBrand>
-        <Image className="h-auto w-[60%]" src="https://fraudkeeper.com/themes/vox/assets/images/fk.png"
-          width="150"
-          height="40" alt="logo"></Image>
+        <Link href="/">
+          <Image className="h-auto w-[60%]" src="https://fraudkeeper.com/themes/vox/assets/images/fk.png"
+            width="150"
+            height="40" alt="logo"></Image>
+        </Link>
       </NavbarBrand>
       <NavbarContent justify="end">
         <NavbarItem isActive>
