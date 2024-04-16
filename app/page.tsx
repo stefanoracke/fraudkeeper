@@ -64,29 +64,32 @@ export default function Home() {
     setJson(JSON.stringify(objSend, null, 4))
     onOpen()
   }
-  
+
 
   useEffect(() => {
-    if(!exposureTable.length && !policyTable.length)
-    service.getJsonData("/ejemplo.json")
-      .then((data: any) => {
-        const exposure = service.transformExposure(data.exposurevehicles[0])
-        const policy = service.transformPolicy(data.policyInsured)
-        dispatch(setPolicyTable([...policy]))
-        dispatch(setExposureTable([...exposure]))
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    if (!exposureTable.length && !policyTable.length)
+      service.getJsonData("/ejemplo.json")
+        .then((data: any) => {
+          const exposure = service.transformExposure(data.exposurevehicles[0])
+          const policy = service.transformPolicy(data.policyInsured)
+          dispatch(setPolicyTable([...policy]))
+          dispatch(setExposureTable([...exposure]))
+        })
+        .catch(error => {
+          console.error(error);
+        });
   }, [])
 
   return (
     <main className="flex flex-col items-center justify-between pt-10">
       <div className="container px-4">
         <div className="w-full py-2 flex justify-end gap-4">
-          <button className="bg-primary text-white font-bold rounded-full py-2 px-4 opacity-50" disabled>
-            Crear +
-          </button>
+
+          <Tooltip content="Deshabilitada - Misma funcionalidad que editar.." >
+            <button className="bg-primary text-white font-bold rounded-full py-2 px-4 opacity-50" disabled>
+              Crear +
+            </button>
+          </Tooltip>
           <button className="bg-primary text-white font-bold rounded-full py-2 px-4" onClick={() => { sendData() }}>
             Enviar Data Transformada
           </button>
